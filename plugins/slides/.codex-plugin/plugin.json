@@ -1,0 +1,33 @@
+{
+  "name": "slides",
+  "version": "1.0.0",
+  "description": "Create browser-based HTML slide presentations with modular slide files, themes, and page-by-page navigation.",
+  "author": {
+    "name": "TU"
+  },
+  "license": "MIT",
+  "keywords": [
+    "slides",
+    "presentation",
+    "html",
+    "deck"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Slides",
+    "shortDescription": "Build browser-based HTML slide decks.",
+    "longDescription": "Create maintainable HTML presentations with a reusable controller, modular slide files, layout templates, themes, and keyboard, mouse, and touch navigation.",
+    "developerName": "TU",
+    "category": "Productivity",
+    "capabilities": [
+      "Write",
+      "Design"
+    ],
+    "defaultPrompt": [
+      "Create an HTML slide deck for my topic.",
+      "Turn this outline into browser slides.",
+      "Add a theme and layout plan for a deck."
+    ],
+    "brandColor": "#2563EB"
+  }
+}
