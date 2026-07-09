@@ -10,13 +10,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <!-- Styles -->
     <link rel="stylesheet" href="styles/base.css">
-    <link rel="stylesheet" href="styles/theme-dark.css"> <!-- Change this to switch themes -->
+    <link rel="stylesheet" href="styles/theme-light.css"> <!-- Change this to switch themes -->
 </head>
 <body>
     <div class="progress-bar" id="progressBar"></div>
 
-    <div class="slides-container" id="slidesContainer">
-        <div class="loading">Loading...</div>
+    <div class="viewport-shell" id="viewportShell">
+        <main class="slide-stage" id="slideStage" aria-live="polite">
+            <div class="slides-container" id="slidesContainer">
+                <div class="loading">Loading...</div>
+            </div>
+        </main>
     </div>
 
     <!-- Navigation controls -->
@@ -60,6 +64,27 @@
         let slides = [];
         let currentSlide = 0;
         let totalSlides = 0;
+        const STAGE_WIDTH = 1600;
+        const STAGE_HEIGHT = 900;
+        const MOBILE_QUERY = '(max-width: 768px) and (orientation: portrait)';
+
+        function updateStageScale() {
+            const stage = document.getElementById('slideStage');
+            const isMobile = window.matchMedia(MOBILE_QUERY).matches;
+
+            if (isMobile) {
+                document.documentElement.style.setProperty('--stage-scale', '1');
+                return;
+            }
+
+            const navSafeWidth = 96;
+            const navSafeHeight = 96;
+            const availableWidth = Math.max(320, window.innerWidth - navSafeWidth);
+            const availableHeight = Math.max(240, window.innerHeight - navSafeHeight);
+            const scale = Math.min(availableWidth / STAGE_WIDTH, availableHeight / STAGE_HEIGHT);
+            document.documentElement.style.setProperty('--stage-scale', scale.toFixed(4));
+            stage.dataset.scale = scale.toFixed(4);
+        }
 
         // Load all slides
         async function loadSlides() {
@@ -86,10 +111,12 @@
 
                 initializeSlides();
             } catch (error) {
-                container.innerHTML = `<div class="slide active" style="text-align:center;">
-                    <h2 style="color:var(--accent);">Loading Failed</h2>
-                    <p>${error.message}</p>
-                    <p style="margin-top:20px;">Please ensure you are running a local server</p>
+                container.innerHTML = `<div class="slide active center-layout">
+                    <div class="content">
+                        <h2 style="color:var(--accent);">Loading Failed</h2>
+                        <p>${error.message}</p>
+                        <p style="margin-top:20px;">Please ensure you are running a local server</p>
+                    </div>
                 </div>`;
             }
         }
@@ -100,6 +127,7 @@
             document.getElementById('totalPages').textContent = totalSlides;
             createDots();
             updateNavigation();
+            updateStageScale();
         }
 
         function createDots() {
@@ -192,7 +220,12 @@
         });
 
         // Initialize
-        document.addEventListener('DOMContentLoaded', loadSlides);
+        window.addEventListener('resize', updateStageScale);
+        window.addEventListener('orientationchange', updateStageScale);
+        document.addEventListener('DOMContentLoaded', () => {
+            updateStageScale();
+            loadSlides();
+        });
     </script>
 </body>
 </html>
